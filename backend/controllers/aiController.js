@@ -66,7 +66,8 @@ const PropertyVerifiedAi = async (req, res) => {
     } else if (mode == "discuss") {
       const prompt = Getprompt(mode, answers, questions);
       const Geminiresponse = await GeminiCall(prompt);
-      const cleanResponse = cleanAndParseJSON(Geminiresponse);
+      const cleanResponse = cleanAndParseJSON(Geminiresponse ,"disscus");
+      console.log(Geminiresponse)
 
       res.json({ message: "Rent match successfully", cleanResponse });
     } else {
