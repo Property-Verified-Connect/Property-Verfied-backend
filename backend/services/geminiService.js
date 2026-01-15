@@ -248,14 +248,15 @@ const cleanAndParseJSON = (aiResponseString , mode) => {
   }
 };
 
-const getRentServices = async (answer , Id) => {
+const getRentServices = async (answer, Id) => {
   const city = answer[0];
   const RoomeType = answer[1];
   const budget = answer[2].replace("₹", "").split("-");
   const MinBudget = Number(budget[0].replace(",", ""));
-  const MaxBuget = Number(budget[1].replace(",", ""));
-  const room = answer[3] == "Room" ? "Independent House / Villa" : "Apartment";
+  const MaxBuget = Number(budget[1].replace(",", "").replace("+", ""));
+  const room = answer[3] == "Room" ? "Apartment" : "Apartment"; // Fix this logic
   const profession = answer[4];
+  const Lifestyle = answer[5]; // You're missing this!
   const RoomatePerfer = answer[6];
   const Foodpreference = answer[7];
   const DrinksAndSmokeAllowed =
@@ -269,33 +270,34 @@ const getRentServices = async (answer , Id) => {
       ? "None"
       : "Unknown";
 
-  const Religion = answer[9].replace(/\s/g, "");
+  // DON'T remove spaces - keep original format
+  const Religion = answer[9]; 
+  const Gender = answer[10];
+
+  const Final_budget = `₹${MinBudget}-₹${MaxBuget}`;
 
   let query = supabaseAdmin
     .from("propertyapproval")
-    .select("* ,user_id(name)")
+    .select("*, user_id(name)")
     .eq("looking_for", "Rent / Lease")
     .eq("city", city)
     .eq("property_type", room)
+    .eq("profession", profession) // Add this
+    .eq("Lifestyle", Lifestyle) // Add this
     .eq("RoomatePerfer", RoomatePerfer)
     .eq("Foodpreference", Foodpreference)
     .eq("DrinksAndSmokeAllowed", DrinksAndSmokeAllowed)
-    .eq("Religion", Religion)
+    .eq("Religion", Religion) // Keep spaces
+    .eq("available_for", Gender) // Keep spaces
     .eq("roomtype", RoomeType)
     .gte("price", MinBudget)
     .lte("price", MaxBuget);
-   
-    const Final_budget = String(`₹${MinBudget}-₹${MaxBuget}`)
-  
-  // Only add Religion filter if it's not NULL or empty
-  // if (Religion && Religion !== "NULL" && Religion.trim() !== "") {
-  //   query = query.eq("Religion", Religion);
-  // }
 
   console.table({
     city,
     room,
     profession,
+    Lifestyle,
     RoomatePerfer,
     Foodpreference,
     DrinksAndSmokeAllowed,
@@ -303,33 +305,36 @@ const getRentServices = async (answer , Id) => {
     RoomeType,
     MinBudget,
     MaxBuget,
-  Final_budget
+    Final_budget,
+    Gender
   });
 
+  // Save user behavior
   const { data: user_behavior, error: user_behavior_error } =
     await SetUserBehaviorService({
       userId: Id,
-      Rent_area:city,
-      Rent_Budget:Final_budget,
-      Rent_property_type:room,
-      Roommate_type:RoomatePerfer,
-      Food_perferances:Foodpreference,
-      DrinkOrSmoke:DrinksAndSmokeAllowed,
-      Religion :Religion 
+      Rent_area: city,
+      Rent_Budget: Final_budget,
+      Rent_property_type: room,
+      Roommate_type: RoomatePerfer,
+      Food_perferances: Foodpreference,
+      DrinkOrSmoke: DrinksAndSmokeAllowed,
+      Religion: Religion
     });
 
-  if (user_behavior_error)
-    return console.log("Error occur in the inserion", user_behavior_error);
+  if (user_behavior_error) {
+    console.log("Error in insertion:", user_behavior_error);
+  }
 
   const { data, error } = await query;
+  
   if (error) {
     console.error("Supabase query error:", error);
     throw new Error(error.message);
   }
 
-  console.log(data);
-  // ✅ Return empty array if no results
-  return data;
+  console.log("Query results:", data);
+  return data || [];
 };
 
 const GetBudgetPropertyService = async (budget ,Id) => {
@@ -362,6 +367,8 @@ const GetCategoryPropertyService = async (lowerArea, city) => {
   const orCondition = lowerArea
     .map((area) => `location.ilike.%${area}%`)
     .join(",");
+  
+    
 
   return await supabaseAdmin
     .from("propertyapproval")

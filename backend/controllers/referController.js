@@ -8,35 +8,58 @@ const { getFlagValue } = require("./adminController");
 
 const referIntoDB = async (req, res) => {
   try {
-    const {  customerName,
-    contactNumber,
-    profession,
-    budgetRange,
-    projectName,
-    notes,
-    referralName} = req.body;
+    const {
+      customerName,
+      contactNumber,
+      profession,
+      budgetRange,
+      projectName,
+      notes,
+      referralName
+    } = req.body;
 
-
-   const {data , error} = await partnerIDprojectNameService(projectName)
-   console.log(  "partner id - ", data.user_id)
-   const  flag = await checkSuspiciousPartnerService(data.user_id)
-    console.log("flag - ",flag)
-    const {stage , stageerror} = await referIntoDBService( customerName,
-    contactNumber,
-    profession,
-    budgetRange,
-    projectName,
-    notes,
-    referralName, 
-    data.user_id,
-    flag.data.suspect
-  )
-
+    console.log(projectName);
     
-   console.log(error ,"new error", stageerror)
-    res.json({ message: 'refer instead ✨', error , stageerror });
+    let userId = null;
+    let suspect = null;
+
+    if (projectName !== "Other") {
+      const { data, error } = await partnerIDprojectNameService(projectName);
+      
+      if (error) {
+        return res.status(400).json({ error: 'Failed to get partner ID' });
+      }
+      
+      console.log("partner id - ", data.user_id);
+      userId = data.user_id;
+      
+      const flag = await checkSuspiciousPartnerService(data.user_id);
+      console.log("flag - ", flag);
+      suspect = flag.data.suspect;
+    }
+
+    const { data: stageData, error: stageerror } = await referIntoDBService(
+      customerName,
+      contactNumber,
+      profession,
+      budgetRange,
+      projectName,
+      notes,
+      referralName,
+      userId,
+      suspect
+    );
+
+    console.log("stage error", stageerror);
+    
+    res.json({ 
+      message: 'refer instead ✨', 
+      error: stageerror ? stageerror : null 
+    });
+    
   } catch (err) {
-    res.status(500).json({ error: 'refer instead fail ✨' , err });
+    console.error(err);
+    res.status(500).json({ error: 'refer instead fail ✨', details: err.message });
   }
 };
 
