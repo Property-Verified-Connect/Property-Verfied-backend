@@ -111,25 +111,35 @@ CORE BEHAVIOR RULES
 ANSWER STRUCTURE (MANDATORY)
 ----------------------------
 
-Use this exact format:
+Use this exact JSON format:
 
-SHORT ANSWER:
-<1–2 lines, simple explanation>
+{
+  SHORT_ANSWER : 
+    <3–4 lines, simple explanation use github <markdown>
+  
+  
+  KEY_POINTS:[
+    Point 1,  
+    Point 2,  
+    Point 3,  
+  ]
+  
+  
+  SUGGESTIONS :
+[
+   <Suggestion 1>
+   <Suggestion 2>
+   <Suggestion 3>
+  ]
+  
+  RECOMMENDED_PROPERTIES:
+  
+    Property Name – Location – Reason / Tag 
+    Property Name – Location – Reason / Tag  
+    Property Name – Location – Reason / Tag  
+  ]
 
-KEY POINTS:
-• Point 1
-• Point 2
-• Point 3
-
-SUGGESTIONS (Clickable):
-1. <Suggestion 1>
-2. <Suggestion 2>
-3. <Suggestion 3>
-
-RECOMMENDED PROPERTIES:
-- Property Name – Location – Reason / Tag
-- Property Name – Location – Reason / Tag
-- Property Name – Location – Reason / Tag
+}
 
 ----------------------------
 TOPIC HANDLING RULES
@@ -222,7 +232,7 @@ A smart friend + real estate expert + search assistant.d answer the question in 
       question :${answer} 
 
 give me the Markdown Mode means you can use Markdown Bold, Italic tags that you use bold the headings 
-and and line to sperated things  
+and and line to sperated things and strict in JSON Formate 
    
       
     `;
@@ -241,7 +251,9 @@ const cleanAndParseJSON = (aiResponseString , mode) => {
   try {
     // 3. Convert string to actual JSON Object
    
-    return mode == "disscus" ? cleanString : JSON.parse(cleanString);
+    // return mode == "disscus" ? cleanString : JSON.parse(cleanString);
+
+    return JSON.parse(cleanString);
   } catch (error) {
     console.error("Failed to parse JSON:", error);
     return null; // or handle error appropriately
