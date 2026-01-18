@@ -102,6 +102,7 @@ CORE BEHAVIOR RULES
    - Never force the user into suggestions
 
 
+
 ----------------------------
 ANSWER STRUCTURE (MANDATORY)
 ----------------------------

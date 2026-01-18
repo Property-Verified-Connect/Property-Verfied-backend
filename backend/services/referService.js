@@ -47,9 +47,19 @@ const referIntoDBService = async (
 };
 
 
+ const setCustomerleadStatusService = async (id , status) => {
+  return await  supabaseAdmin
+    .from('customer_leads')
+    .update({ status: status })
+    .eq('id', id)
+    .single();
+};
+
+
+
 
  const getAllApprovedLeadService = async (id) => {
-  return await supabaseAdmin.from('customer_leads').select("*,user_id(name)").eq("status","approved").order('created_at', { ascending: false }).eq("user_id",id);
+  return await supabaseAdmin.from('customer_leads').select("*,user_id(name)").neq("status","pending").order('created_at', { ascending: false }).eq("user_id",id);
 };
 
 
@@ -61,4 +71,4 @@ const referIntoDBService = async (
 
 module.exports = { partnerIDprojectNameService , referIntoDBService 
   , getCustomerleadService ,setCustomerleadtoApprovalService ,getAllApprovedLeadService 
- ,getPropertyNameService}
+ ,getPropertyNameService , setCustomerleadStatusService}
