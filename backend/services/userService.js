@@ -140,6 +140,7 @@ const getApprovedBookingService = async (id) => {
         city,
         property_type,
            property_name,
+           looking_for,
         price,
         photos,
         user_id (

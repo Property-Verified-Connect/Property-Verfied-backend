@@ -1,4 +1,5 @@
 const { supabaseAdmin } = require('../config/supabaseClient');
+const { SetTerm } = require('../controllers/referController');
 
  const partnerIDprojectNameService = async (projectName) => {
   return await supabaseAdmin.from('propertyapproval').select("user_id").eq('property_name',projectName).single()
@@ -67,8 +68,15 @@ const referIntoDBService = async (
     return await supabaseAdmin.from("propertyapproval").select("property_name")
   }
 
+const setTermService = async(id) => {
+  return await supabaseAdmin
+    .from("users")
+    .update({ is_Term: true })   
+    .eq('id', id)                
+    .select()
+}
 
 
 module.exports = { partnerIDprojectNameService , referIntoDBService 
   , getCustomerleadService ,setCustomerleadtoApprovalService ,getAllApprovedLeadService 
- ,getPropertyNameService , setCustomerleadStatusService}
+ ,getPropertyNameService , setCustomerleadStatusService , setTermService}
