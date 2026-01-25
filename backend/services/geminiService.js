@@ -376,7 +376,28 @@ const GetCategoryPropertyService = async (lowerArea, city) => {
     .map((area) => `location.ilike.%${area}%`)
     .join(",");
   
-    
+    try{
+
+const { data: properties } = await supabaseAdmin
+  .from("propertyapproval")
+  .select("id")
+  .ilike("location", "%Rajiv nagar%");
+
+const propertyIds = properties?.map(p => p.id) || [];
+
+// Step 2: Count bookings for those properties
+const { count, error } = await supabaseAdmin
+  .from("bookings")
+  .select("*", { count: 'exact', head: true })
+  .in("property_approved", propertyIds);
+
+     
+       console.log( "Order Data ",data);
+      if( error) console.log(error)
+    }catch(error)
+  {
+    console.log(error)
+  }
 
   return await supabaseAdmin
     .from("propertyapproval")
