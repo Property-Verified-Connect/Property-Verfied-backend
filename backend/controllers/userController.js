@@ -125,7 +125,7 @@ const setApprovalBooking = async (req, res) => {
       timeSlot,
       user.id,
       suspected.data.suspect ,
-       AI_Percentage, AI_Description, AI_Behaviortype 
+      AI_Percentage, AI_Description, AI_Behaviortype 
     );
 
     if (error) throw error;

@@ -62,6 +62,53 @@ const getPropertybyIDService = async (id) => {
 
 };
 
+// Get property by ID
+async function getPropertyById(propertyId) {
+  const { data, error } = await supabaseAdmin
+    .from('propertyapproval')
+    .select('*')
+    .eq('id', propertyId)
+    .single();
+  
+  if (error) {
+    if (error.code === 'PGRST116') return null; // Not found
+    throw error;
+  }
+  return data;
+}
+
+// Update property
+async function updatePropertyService(propertyId, payload) {
+  const { data, error } = await supabaseAdmin
+    .from('propertyapproval')
+    .update(payload)
+    .eq('id', propertyId)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+}
+
+// Optional: Delete old photos from storage
+async function deletePhotoFromStorageService(photoUrl) {
+  try {
+    // Extract path from public URL
+    const urlParts = photoUrl.split(`/${BUCKET}/`);
+    if (urlParts.length < 2) return;
+    
+    const path = urlParts[1];
+    const { error } = await supabaseAdmin.storage.from(BUCKET).remove([path]);
+    
+    if (error) console.error('Error deleting photo:', error);
+  } catch (err) {
+    console.error('Delete photo error:', err);
+  }
+}
+
+
+
+
 
 
 const setPropertytoApprovalService = async (id) => {
@@ -124,5 +171,7 @@ module.exports = {
   setPropertytoApprovalService,
   setAllPartnerPropertyService,
   setBookingtoContactService,
-  setBookingtoPurchaseService
+  setBookingtoPurchaseService,
+  updatePropertyService,
+  deletePhotoFromStorageService
 };

@@ -14,6 +14,7 @@ router.post("/setPropertytoApproval"  , propertyController.setPropertytoApproval
 router.get("/setAllPartnerProperty" ,authorize(["partner"])  , propertyController.setAllPartnerProperty);
 router.post("/setBookingtoContact"  , propertyController.setBookingtoContact);
 router.post("/setBookingtoPurchase"  , propertyController.setBookingtoPurchase);
+router.post('/updatePropertyinDB', authorize(['partner']) ,upload.array("photos"), propertyController.updateProperty );
 
 
 
