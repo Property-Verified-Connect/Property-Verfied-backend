@@ -7,6 +7,7 @@ const {
   GetCategoryPropertyService,
 } = require("../services/geminiService");
 const { SetUserBehaviorService } = require("../services/user_behavior");
+const { getAllApprovedPropertyService } = require("../services/userService");
 
 const PropertyVerifiedAi = async (req, res) => {
   
@@ -64,7 +65,9 @@ const PropertyVerifiedAi = async (req, res) => {
       
       res.json({ message: " Category match successfully", cleanResponse ,CategoryProperties });
     } else if (mode == "discuss") {
-      const prompt = Getprompt(mode, answers, questions);
+      const Property =  await getAllApprovedPropertyService() 
+      const prompt = Getprompt(mode, answers, questions, Property);
+      console.log(prompt);
       const Geminiresponse = await GeminiCall(prompt);
       const cleanResponse = cleanAndParseJSON(Geminiresponse ,"disscus");
       console.log("Gemini Response - ",Geminiresponse)
