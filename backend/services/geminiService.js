@@ -32,13 +32,15 @@ const Getprompt = (mode, answer, question, Property) => {
              })
              .join("\n") // Joins the array into a single string
          }
-       as the   Budget analyiser analyses the budget using answer return output in json as follows 
+       as the Budget analyiser analyses the budget using answer return output in json as follows 
         {
          safe_purchase_limit : analyis the Safe Purchase Limit the limit in the lowernumber-uppernumber limit in Number format ,
          emi_capacity : give the emi capacity for the per month,
          risk:risk level (high , low , mid),
          recommandation : why to buy this kind of budget with satatisics and make it short of 2-3 lines only   
         }
+
+          CORE BEHAVIOR RULES - only Provide the data in the JSON format
         
         `;
     }

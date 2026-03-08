@@ -14,6 +14,7 @@ const referIntoDBService = async (
   notes,
   referralName,
   partner_id,
+  referer_id,
   flag
 ) => {
       return await supabaseAdmin
@@ -27,6 +28,7 @@ const referIntoDBService = async (
         project_name: projectName,
         notes: notes,
         referral_name: referralName,
+        referer_id:referer_id,
         user_id: partner_id, 
         status:flag == false ? "approved": "pending"
       },
@@ -64,6 +66,10 @@ const referIntoDBService = async (
 };
 
 
+ const getUserApprovedLeadService = async (id) => {
+  return await supabaseAdmin.from('customer_leads').select("*,user_id(name)").neq("status","pending").order('created_at', { ascending: false }).eq("referer_id",id);
+};
+
   const getPropertyNameService = async() =>{
     return await supabaseAdmin.from("propertyapproval").select("property_name")
   }
@@ -79,4 +85,4 @@ const setTermService = async(id) => {
 
 module.exports = { partnerIDprojectNameService , referIntoDBService 
   , getCustomerleadService ,setCustomerleadtoApprovalService ,getAllApprovedLeadService 
- ,getPropertyNameService , setCustomerleadStatusService , setTermService}
+ ,getPropertyNameService , setCustomerleadStatusService , setTermService ,getUserApprovedLeadService}

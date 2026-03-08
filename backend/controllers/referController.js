@@ -13,11 +13,14 @@ const {
   getPropertyNameService,
   setCustomerleadStatusService,
   setTermService,
+  getUserApprovedLeadService,
 } = require("../services/referService");
 const { getFlagValue } = require("./adminController");
 
 const referIntoDB = async (req, res) => {
   try {
+    const referer_id = req.user.id
+    console.log( "Add the - ",referer_id)
     const {
       customerName,
       contactNumber,
@@ -57,6 +60,7 @@ const referIntoDB = async (req, res) => {
       notes,
       referralName,
       userId,
+      referer_id,
       suspect,
     );
 
@@ -113,6 +117,25 @@ const getAllApprovedLead = async (req, res) => {
     const user = req.user.id;
     console.log(" partner id with get - ", user);
     const { data, error } = await getAllApprovedLeadService(user);
+
+    if (error) throw error;
+
+    res.status(200).json({
+      message: "✅ properties fetched successfully",
+      customer_leads: data,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching properties:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+const getUserApprovedLead = async (req, res) => {
+  try {
+    const user = req.user.id;
+    console.log(" partner id with get - ", user);
+    const { data, error } = await getUserApprovedLeadService(user);
 
     if (error) throw error;
 
@@ -185,6 +208,7 @@ module.exports = {
   setCustomerleadtoApproval,
   setCustomerleadStatus,
   getAllApprovedLead,
+  getUserApprovedLead,
   getPropertyName,
   SetTerm
 };
