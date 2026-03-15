@@ -33,6 +33,20 @@ const getProfile = async (req, res) => {
   }
 };
 
+
+const postGetProfile = async (req, res) => {
+  try {
+    const {id} = req.body
+    console.log(id)
+    const { data, error } = await getUserById(id);
+    if (error) return res.status(500).json({ error: error.message });
+
+    res.json(data);
+  } catch {
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+};
+
 const getDashboard = (req, res) => {
   res.json({ message: `Welcome ${req.user.role}` });
 };
@@ -321,5 +335,6 @@ module.exports = {
   AddPropertyInWishlist,
   getWhishlistPropertyById,
   DelectInWishlist,
-  SetUserInterest
+  SetUserInterest,
+  postGetProfile
 };

@@ -12,6 +12,7 @@ router.get("/getAllProperties" , propertyController.getAllProperties);
 router.post("/getPropertiesbyID"  , propertyController.getPropertybyID);
 router.post("/setPropertytoApproval"  , propertyController.setPropertytoApproval);
 router.get("/setAllPartnerProperty" ,authorize(["partner"])  , propertyController.setAllPartnerProperty);
+router.post("/setAllPartnerProperty"  , propertyController.postAllPartnerProperty);
 router.post("/setBookingtoContact"  , propertyController.setBookingtoContact);
 router.post("/setBookingtoPurchase"  , propertyController.setBookingtoPurchase);
 router.post('/updatePropertyinDB', authorize(['partner']) ,upload.array("photos"), propertyController.updateProperty );

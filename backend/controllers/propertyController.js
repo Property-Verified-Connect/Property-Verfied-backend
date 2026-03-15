@@ -387,3 +387,51 @@ exports.setAllPartnerProperty = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+exports.postAllPartnerProperty = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.json({ message: "id not Found" });
+    }
+    const { data, error } = await propertyService.setAllPartnerPropertyService(
+      id
+    );
+
+    if (error) throw error;
+
+    res.status(200).json({
+      message: "✅ Property Approved  successfully",
+      partner_property: data,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching properties:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+exports.postsetAllPartnerProperty = async (req, res) => {
+  try {
+    const { id } = req.body ;
+
+    if (!id) {
+      return res.json({ message: "id not Found" });
+    }
+    const { data, error } = await propertyService.setAllPartnerPropertyService(
+      id
+    );
+
+    if (error) throw error;
+
+    res.status(200).json({
+      message: "✅ Property Approved  successfully",
+      partner_property: data,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching properties:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
